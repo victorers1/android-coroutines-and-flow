@@ -11,14 +11,17 @@ class SequentialNetworkRequestsCallbacksViewModel(
     private val mockApi: CallbackMockApi = mockApi()
 ) : BaseViewModel<UiState>() {
 
+    // Retrofit calls
     private var getAndroidVersionsCall: Call<List<AndroidVersion>>? = null
     private var getAndroidFeaturesCall: Call<VersionFeatures>? = null
 
+    // This is a callback hell
     fun perform2SequentialNetworkRequest() {
         uiState.value = UiState.Loading
 
         getAndroidVersionsCall = mockApi.getRecentAndroidVersions()
 
+        // `enqueue`: run retrofit call asynchronously
         getAndroidVersionsCall!!.enqueue(object : Callback<List<AndroidVersion>> {
             override fun onResponse(
                 call: Call<List<AndroidVersion>?>, response: Response<List<AndroidVersion>?>
@@ -28,6 +31,8 @@ class SequentialNetworkRequestsCallbacksViewModel(
 
                     getAndroidFeaturesCall =
                         mockApi.getAndroidVersionFeatures(mostRecentVersion.apiLevel)
+
+                    // Create a nasty nested callback hell
                     getAndroidFeaturesCall!!.enqueue(object : Callback<VersionFeatures> {
                         override fun onResponse(
                             call: Call<VersionFeatures?>, response: Response<VersionFeatures?>
@@ -58,14 +63,14 @@ class SequentialNetworkRequestsCallbacksViewModel(
             override fun onFailure(call: Call<List<AndroidVersion>?>, error: Throwable) {
                 uiState.value = UiState.Error("Android versions error: connection failed")
             }
-
         })
-
     }
 
+    // When the screen is dismissed
     override fun onCleared() {
         super.onCleared()
 
+        // Cancel all ongoing requests
         getAndroidFeaturesCall?.cancel()
         getAndroidFeaturesCall?.cancel()
     }
