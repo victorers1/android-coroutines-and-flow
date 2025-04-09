@@ -5,21 +5,25 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 
-
 fun main() = runBlocking {
     println("main starts")
 
-    // Register all coroutines to run in parallel.
-    // Because of that, the run time is 500 ms
-    joinAll(
-        async { coroutine(1, 500) },
-        async { coroutine(2, 300) }
+    joinAll( // equivalent to a for-each Job
+        async { suspendedCoroutine(1, 500) },
+        async { suspendedCoroutine(2, 300) },
+        async {
+            repeat(5) {
+                println("other tasks is working on ${Thread.currentThread().name}")
+                delay(100)
+            }
+        }
     )
 
     println("main ends")
 }
 
-suspend fun coroutine(number: Int, delay: Long) {
+// Behaves like it runs on different threads but runs in a single thread
+suspend fun suspendedCoroutine(number: Int, delay: Long) {
     println("Coroutine $number starts work on ${Thread.currentThread().name}")
     delay(delay)
     println("Coroutine $number has finished on ${Thread.currentThread().name}")

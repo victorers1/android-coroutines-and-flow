@@ -15,9 +15,8 @@ fun main() {
 
 fun threadRoutine(number: Int, delay: Long) {
     thread { // Creates a new thread
-        println("Coroutine $number starts work")
+        println("Coroutine $number starts work on ${Thread.currentThread().name}")
         Thread.sleep(delay)
-        println("Coroutine $number has finished")
+        println("Coroutine $number has finished on ${Thread.currentThread().name}")
     }
-
 }

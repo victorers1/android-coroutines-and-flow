@@ -1,20 +1,16 @@
-package com.lukaslechner.coroutineusecasesonandroid.playground.fundamentals
+package com.lukaslechner.coroutineusecasesonandroid.playground.corountinebuilders
 
+import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.runBlocking
 
-
+@DelicateCoroutinesApi
 fun main() = runBlocking {
     println("main starts")
 
-    // Register all coroutines to run in parallel.
-    // Because of that, the run time is 500 ms
-    joinAll(
-        async { coroutine(1, 500) },
-        async { coroutine(2, 300) }
-    )
+    async { coroutine(1, 500) }
+    async { coroutine(2, 300) }
 
     println("main ends")
 }
