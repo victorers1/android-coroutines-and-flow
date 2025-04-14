@@ -7,11 +7,10 @@ import com.lukaslechner.coroutineusecasesonandroid.utils.MockNetworkInterceptor
 
 fun mockApi() =
     createMockApi(
-        MockNetworkInterceptor()
-            .mock(
+        MockNetworkInterceptor().mock(
                 "http://localhost/recent-android-versions",
-                { Gson().toJson(mockAndroidVersions) },
-                200,
+                { Gson().toJson(mockAndroidVersions) },// {"Something went wrong on the server side" }
+                200, //500
                 1500
-            )
+        )
     )
